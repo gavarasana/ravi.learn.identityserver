@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "D+L7zq2scaYrdEp+/6MIDwN6qdIwJn/HefgYh8Iy70FctyekAFSzDMnLLU6UY2yQxujBRPxA2pTOk7mweVjsZw==",
+  "success": true,
+  "projectFilePath": "D:\\code\\git\\learn\\ravi.learn.identityserver\\src\\ImageGallery.Model\\ImageGallery.Model.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\gavar\\.nuget\\packages\\system.componentmodel.annotations\\4.7.0\\system.componentmodel.annotations.4.7.0.nupkg.sha512"
+  ],
+  "logs": []
+}
