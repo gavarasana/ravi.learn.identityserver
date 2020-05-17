@@ -1,2 +1,2 @@
-# ravi.learn.identityserver
+# ravi.learn.imagegallery
 Learn basics of identity server
