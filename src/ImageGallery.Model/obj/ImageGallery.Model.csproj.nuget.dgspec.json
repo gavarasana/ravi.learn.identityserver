@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\code\\git\\learn\\ravi.learn.identityserver\\src\\ImageGallery.Model\\ImageGallery.Model.csproj": {}
+    "D:\\code\\git\\learn\\ravi.learn.imagegallery\\src\\ImageGallery.Model\\ImageGallery.Model.csproj": {}
   },
   "projects": {
-    "D:\\code\\git\\learn\\ravi.learn.identityserver\\src\\ImageGallery.Model\\ImageGallery.Model.csproj": {
+    "D:\\code\\git\\learn\\ravi.learn.imagegallery\\src\\ImageGallery.Model\\ImageGallery.Model.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\code\\git\\learn\\ravi.learn.identityserver\\src\\ImageGallery.Model\\ImageGallery.Model.csproj",
+        "projectUniqueName": "D:\\code\\git\\learn\\ravi.learn.imagegallery\\src\\ImageGallery.Model\\ImageGallery.Model.csproj",
         "projectName": "ImageGallery.Model",
-        "projectPath": "D:\\code\\git\\learn\\ravi.learn.identityserver\\src\\ImageGallery.Model\\ImageGallery.Model.csproj",
+        "projectPath": "D:\\code\\git\\learn\\ravi.learn.imagegallery\\src\\ImageGallery.Model\\ImageGallery.Model.csproj",
         "packagesPath": "C:\\Users\\gavar\\.nuget\\packages\\",
-        "outputPath": "D:\\code\\git\\learn\\ravi.learn.identityserver\\src\\ImageGallery.Model\\obj\\",
+        "outputPath": "D:\\code\\git\\learn\\ravi.learn.imagegallery\\src\\ImageGallery.Model\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -61,7 +61,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.202\\RuntimeIdentifierGraph.json"
         }
       }
     }

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "t5pfCxyWoKCaULqA7mLXIh+CPcjGNQfruMiAFazUx5ciFZJ3wbIDR7sQkCIN6pCyNF8cdduQ93NUMZeyN/MBNg==",
+  "dgSpecHash": "Nj9Y4+9AKHOWJ4LCG1FmmZEsAUhPrmL5jMuLydt0AZHjb47T5SiunBYTOjRhz1spd0TbZcSRPPkFXJFBOcvJjA==",
   "success": true,
-  "projectFilePath": "D:\\code\\git\\learn\\ravi.learn.identityserver\\src\\ImageGallery.API\\ImageGallery.API.csproj",
+  "projectFilePath": "D:\\code\\git\\learn\\ravi.learn.imagegallery\\src\\ImageGallery.API\\ImageGallery.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\gavar\\.nuget\\packages\\automapper\\9.0.0\\automapper.9.0.0.nupkg.sha512",
     "C:\\Users\\gavar\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\7.0.0\\automapper.extensions.microsoft.dependencyinjection.7.0.0.nupkg.sha512",

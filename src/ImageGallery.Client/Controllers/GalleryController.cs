@@ -1,5 +1,9 @@
 ﻿using ImageGallery.Client.ViewModels;
 using ImageGallery.Model;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -11,6 +15,7 @@ using System.Threading.Tasks;
 
 namespace ImageGallery.Client.Controllers
 { 
+    
     public class GalleryController : Controller
     {
         private readonly IHttpClientFactory _httpClientFactory;
@@ -21,6 +26,7 @@ namespace ImageGallery.Client.Controllers
                 throw new ArgumentNullException(nameof(httpClientFactory));
         }
 
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             var httpClient = _httpClientFactory.CreateClient("APIClient");
@@ -171,6 +177,12 @@ namespace ImageGallery.Client.Controllers
             response.EnsureSuccessStatusCode();
 
             return RedirectToAction("Index");
+        }
+
+        public async Task Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+           // await HttpContext.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme);
         }
     }
 }
