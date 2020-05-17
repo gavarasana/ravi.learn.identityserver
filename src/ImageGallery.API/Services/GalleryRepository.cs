@@ -1,7 +1,9 @@
 ﻿using ImageGallery.API.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace ImageGallery.API.Services
 {
@@ -11,20 +13,20 @@ namespace ImageGallery.API.Services
 
         public GalleryRepository(GalleryContext galleryContext)
         {
-            _context = galleryContext ?? 
+            _context = galleryContext ??
                 throw new ArgumentNullException(nameof(galleryContext));
         }
 
         public bool ImageExists(Guid id)
         {
             return _context.Images.Any(i => i.Id == id);
-        }       
-
-        public Image GetImage(Guid id)
-        {
-            return _context.Images.FirstOrDefault(i => i.Id == id);
         }
-  
+
+        public async Task<Image> GetImageAsync(Guid id)
+        {
+            return await _context.Images.FirstOrDefaultAsync(i => i.Id == id);
+        }
+
         public IEnumerable<Image> GetImages()
         {
             return _context.Images
@@ -35,7 +37,7 @@ namespace ImageGallery.API.Services
         {
             return _context.Images.Any(i => i.Id == id && i.OwnerId == ownerId);
         }
-        
+
         public void AddImage(Image image)
         {
             _context.Images.Add(image);
@@ -56,9 +58,10 @@ namespace ImageGallery.API.Services
             // the actual files as well) for demo purposes.
         }
 
-        public bool Save()
+        public async Task<bool> SaveAsync()
         {
-            return (_context.SaveChanges() >= 0);
+            var result = await _context.SaveChangesAsync();
+            return (result >= 0);
         }
 
         public void Dispose()
@@ -78,6 +81,6 @@ namespace ImageGallery.API.Services
                 }
 
             }
-        }     
+        }
     }
 }

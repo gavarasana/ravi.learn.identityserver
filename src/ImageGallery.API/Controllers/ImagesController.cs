@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace ImageGallery.API.Controllers
 {
@@ -44,9 +45,9 @@ namespace ImageGallery.API.Controllers
         }
 
         [HttpGet("{id}", Name = "GetImage")]
-        public IActionResult GetImage(Guid id)
+        public async Task<ActionResult<Model.Image>> GetImage(Guid id)
         {          
-            var imageFromRepo = _galleryRepository.GetImage(id);
+            var imageFromRepo = await _galleryRepository.GetImageAsync(id);
 
             if (imageFromRepo == null)
             {
@@ -59,7 +60,7 @@ namespace ImageGallery.API.Controllers
         }
 
         [HttpPost()]
-        public IActionResult CreateImage([FromBody] ImageForCreation imageForCreation)
+        public async Task<IActionResult> CreateImageAsync([FromBody] ImageForCreation imageForCreation)
         {
             // Automapper maps only the Title in our configuration
             var imageEntity = _mapper.Map<Entities.Image>(imageForCreation);
@@ -90,7 +91,7 @@ namespace ImageGallery.API.Controllers
             // add and save.  
             _galleryRepository.AddImage(imageEntity);
 
-            _galleryRepository.Save();
+            await _galleryRepository.SaveAsync();
 
             var imageToReturn = _mapper.Map<Image>(imageEntity);
 
@@ -100,9 +101,9 @@ namespace ImageGallery.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteImage(Guid id)
+        public async Task<IActionResult> DeleteImage(Guid id)
         {            
-            var imageFromRepo = _galleryRepository.GetImage(id);
+            var imageFromRepo = await _galleryRepository.GetImageAsync(id);
 
             if (imageFromRepo == null)
             {
@@ -111,16 +112,15 @@ namespace ImageGallery.API.Controllers
 
             _galleryRepository.DeleteImage(imageFromRepo);
 
-            _galleryRepository.Save();
+            await _galleryRepository.SaveAsync();
 
             return NoContent();
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateImage(Guid id, 
-            [FromBody] ImageForUpdate imageForUpdate)
+        public async Task<IActionResult> UpdateImageAsync(Guid id,             [FromBody] ImageForUpdate imageForUpdate)
         {
-            var imageFromRepo = _galleryRepository.GetImage(id);
+            var imageFromRepo = await _galleryRepository.GetImageAsync(id);
             if (imageFromRepo == null)
             {
                 return NotFound();
@@ -130,7 +130,7 @@ namespace ImageGallery.API.Controllers
 
             _galleryRepository.UpdateImage(imageFromRepo);
 
-            _galleryRepository.Save();
+            await _galleryRepository.SaveAsync();
 
             return NoContent();
         }

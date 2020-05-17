@@ -14,6 +14,8 @@ namespace ImageGallery.API.Entities
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+            /*
             // seed the database with dummy data
             modelBuilder.Entity<Image>().HasData(
                 new Image()
@@ -115,7 +117,7 @@ namespace ImageGallery.API.Entities
                     OwnerId = "b7539694-97e7-4dfe-84da-b4256e1ff5c7"
                 });
 
-            base.OnModelCreating(modelBuilder);
+            */
         }
     }
 }
