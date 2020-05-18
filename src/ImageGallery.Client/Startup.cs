@@ -51,6 +51,7 @@ namespace ImageGallery.Client
                 options.Scope.Add("profile");
                 options.Scope.Add("address");
                 options.SaveTokens = true;
+                options.GetClaimsFromUserInfoEndpoint = true;
 
             });
         }
