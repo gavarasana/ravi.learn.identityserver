@@ -22,7 +22,7 @@ namespace ImageGallery.Client.Controllers
 
         }
 
-        [Route("/claims")]
+        [Route("claims")]
         public ActionResult<Dictionary<string, string>> GetClaims()
         {
             var claims = new Dictionary<string, string>();
