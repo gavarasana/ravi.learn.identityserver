@@ -15,6 +15,7 @@ namespace ImageGallery.Client.Controllers
     [Authorize]
     public class IdentityController : ControllerBase
     {
+        [HttpGet]
         public async Task<ActionResult<string>> GetIdentity()
         {
             var identityToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.IdToken);
@@ -22,6 +23,16 @@ namespace ImageGallery.Client.Controllers
 
         }
 
+        [HttpGet()]
+        [Route("AccessToken")]
+
+        public async Task<ActionResult<string>> GetAccessToken()
+        {
+            var accessToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
+            return Ok(accessToken);
+        }
+
+        [HttpGet]
         [Route("claims")]
         public ActionResult<Dictionary<string, string>> GetClaims()
         {

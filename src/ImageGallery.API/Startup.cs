@@ -8,8 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using System;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace ImageGallery.API
 {
@@ -25,6 +25,15 @@ namespace ImageGallery.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(jwtOptions =>
+                {
+                    jwtOptions.Audience = "api1";
+                    jwtOptions.Authority = "https://localhost:44318/";
+                    jwtOptions.SaveToken = true;
+                    jwtOptions.RequireHttpsMetadata = true;
+                });
+
             services.AddControllers()
                      .AddJsonOptions(opts => opts.JsonSerializerOptions.PropertyNamingPolicy = null);
 
@@ -72,7 +81,10 @@ namespace ImageGallery.API
 
             app.UseStaticFiles();
 
-            app.UseRouting(); 
+            app.UseRouting();
+
+            app.UseAuthorization();
+                
 
             app.UseEndpoints(endpoints =>
             {
