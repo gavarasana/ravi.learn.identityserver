@@ -1,10 +1,12 @@
-﻿using ImageGallery.Client.ViewModels;
+﻿using IdentityModel.Client;
+using ImageGallery.Client.ViewModels;
 using ImageGallery.Model;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -183,6 +185,28 @@ namespace ImageGallery.Client.Controllers
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             await HttpContext.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme);
+        }
+
+        [Authorize(Roles = "PaidUser")]
+        public async Task<ViewResult> OrderFrame()
+        {
+            var httpClient = _httpClientFactory.CreateClient("IDPClient");
+            var metaDataResponse = await httpClient.GetDiscoveryDocumentAsync();
+            if (metaDataResponse.IsError)
+            {
+                return View("Error", new ErrorViewModel { RequestId = this.HttpContext.TraceIdentifier, Message = "Unable to retrieve metadata" });
+            }
+
+            var accessToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
+            var userInfoResponse = await httpClient.GetUserInfoAsync(new UserInfoRequest { Address = metaDataResponse.UserInfoEndpoint, Token = accessToken});
+            if (userInfoResponse.IsError)
+            {
+                return View("Error", new ErrorViewModel { RequestId = this.HttpContext.TraceIdentifier, Message = "Unable to retrieve user info" });
+            }
+
+            var userAddress = userInfoResponse.Claims.FirstOrDefault(c => c.Type == "address")?.Value;
+
+            return View(new OrderFrameViewModel(userAddress));
         }
     }
 }
