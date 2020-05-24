@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using IdentityModel;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
@@ -65,10 +66,17 @@ namespace ImageGallery.Client
                 options.ResponseType = "code";
                 options.UsePkce = true;              
                 options.Scope.Add("address");
+                options.Scope.Add("roles"); 
                 options.SaveTokens = true;
                 options.GetClaimsFromUserInfoEndpoint = true;
                 options.ClaimActions.DeleteClaims("s_hash");
                 options.ClaimActions.MapUniqueJsonKey("address", "address");
+                options.ClaimActions.MapUniqueJsonKey("role", "role");
+                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                {
+                    RoleClaimType = JwtClaimTypes.Role,
+                    NameClaimType = JwtClaimTypes.Name
+                };
 
             });
         }
