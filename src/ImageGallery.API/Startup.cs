@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using IdentityServer4.AccessTokenValidation;
 using ImageGallery.API.Entities;
 using ImageGallery.API.Services;
 using Microsoft.AspNetCore.Builder;
@@ -8,8 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using System;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace ImageGallery.API
 {
@@ -25,13 +26,12 @@ namespace ImageGallery.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(jwtOptions =>
+
+            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+                .AddIdentityServerAuthentication(options =>
                 {
-                    jwtOptions.Audience = "api1";
-                    jwtOptions.Authority = "https://localhost:44318/";
-                    jwtOptions.SaveToken = true;
-                    jwtOptions.RequireHttpsMetadata = true;
+                    options.Authority = "https://localhost:44318";
+                    options.ApiName = "imagegalleryapi";
                 });
 
             services.AddControllers()
@@ -82,6 +82,8 @@ namespace ImageGallery.API
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
                 

@@ -16,15 +16,15 @@ using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace ImageGallery.Client.Controllers
-{ 
-    
+{
+
     public class GalleryController : Controller
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
         public GalleryController(IHttpClientFactory httpClientFactory)
         {
-            _httpClientFactory = httpClientFactory ?? 
+            _httpClientFactory = httpClientFactory ??
                 throw new ArgumentNullException(nameof(httpClientFactory));
         }
 
@@ -36,17 +36,25 @@ namespace ImageGallery.Client.Controllers
             var request = new HttpRequestMessage(
                 HttpMethod.Get,
                 "/api/images/");
-            
+
             var response = await httpClient.SendAsync(
                 request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            if (response.IsSuccessStatusCode)
+            {
 
-            using (var responseStream = await response.Content.ReadAsStreamAsync())
-            {   
-                return View(new GalleryIndexViewModel(
-                    await JsonSerializer.DeserializeAsync<List<Image>>(responseStream)));
-            }             
+               using (var responseStream = await response.Content.ReadAsStreamAsync())
+                {
+                    return View(new GalleryIndexViewModel(
+                        await JsonSerializer.DeserializeAsync<List<Image>>(responseStream)));
+                }
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized || response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
+
+            throw new Exception("Error occurred while accessing API");
         }
 
         public async Task<IActionResult> EditImage(Guid id)
@@ -64,7 +72,7 @@ namespace ImageGallery.Client.Controllers
             response.EnsureSuccessStatusCode();
 
             using (var responseStream = await response.Content.ReadAsStreamAsync())
-            { 
+            {
                 var deserializedImage = await JsonSerializer.DeserializeAsync<Image>(responseStream);
 
                 var editImageViewModel = new EditImageViewModel()
@@ -74,7 +82,7 @@ namespace ImageGallery.Client.Controllers
                 };
 
                 return View(editImageViewModel);
-            }     
+            }
         }
 
         [HttpPost]
@@ -87,8 +95,10 @@ namespace ImageGallery.Client.Controllers
             }
 
             // create an ImageForUpdate instance
-            var imageForUpdate = new ImageForUpdate() { 
-                Title = editImageViewModel.Title };
+            var imageForUpdate = new ImageForUpdate()
+            {
+                Title = editImageViewModel.Title
+            };
 
             // serialize it
             var serializedImageForUpdate = JsonSerializer.Serialize(imageForUpdate);
@@ -103,13 +113,13 @@ namespace ImageGallery.Client.Controllers
                 serializedImageForUpdate,
                 System.Text.Encoding.Unicode,
                 "application/json");
-            
+
             var response = await httpClient.SendAsync(
                 request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 
             response.EnsureSuccessStatusCode();
 
-            return RedirectToAction("Index");       
+            return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> DeleteImage(Guid id)
@@ -160,8 +170,8 @@ namespace ImageGallery.Client.Controllers
             }
 
             // serialize it
-            var serializedImageForCreation = JsonSerializer.Serialize(imageForCreation);  
-            
+            var serializedImageForCreation = JsonSerializer.Serialize(imageForCreation);
+
             var httpClient = _httpClientFactory.CreateClient("APIClient");
 
             var request = new HttpRequestMessage(
@@ -198,7 +208,7 @@ namespace ImageGallery.Client.Controllers
             }
 
             var accessToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
-            var userInfoResponse = await httpClient.GetUserInfoAsync(new UserInfoRequest { Address = metaDataResponse.UserInfoEndpoint, Token = accessToken});
+            var userInfoResponse = await httpClient.GetUserInfoAsync(new UserInfoRequest { Address = metaDataResponse.UserInfoEndpoint, Token = accessToken });
             if (userInfoResponse.IsError)
             {
                 return View("Error", new ErrorViewModel { RequestId = this.HttpContext.TraceIdentifier, Message = "Unable to retrieve user info" });

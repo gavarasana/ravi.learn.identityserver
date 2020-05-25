@@ -1,4 +1,5 @@
 ﻿using IdentityModel;
+using ImageGallery.Client.HttpHandlers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -27,6 +28,9 @@ namespace ImageGallery.Client
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
+            services.AddTransient<BearerTokenHandler>();
+
             //services.Configure<FormOptions>(options =>
             //{
             //    options.ValueLengthLimit = 262144;
@@ -42,7 +46,7 @@ namespace ImageGallery.Client
                 client.BaseAddress = new Uri("https://localhost:44366/");
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
-            });
+            }).AddHttpMessageHandler<BearerTokenHandler>();
 
             services.AddHttpClient("IDPClient", client =>
             {
@@ -66,7 +70,8 @@ namespace ImageGallery.Client
                 options.ResponseType = "code";
                 options.UsePkce = true;              
                 options.Scope.Add("address");
-                options.Scope.Add("roles"); 
+                options.Scope.Add("roles");
+                options.Scope.Add("imagegalleryapi");
                 options.SaveTokens = true;
                 options.GetClaimsFromUserInfoEndpoint = true;
                 options.ClaimActions.DeleteClaims("s_hash");
