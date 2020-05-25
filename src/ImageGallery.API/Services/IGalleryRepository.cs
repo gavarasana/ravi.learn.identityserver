@@ -7,9 +7,9 @@ namespace ImageGallery.API.Services
 {
     public interface IGalleryRepository
     {
-        IEnumerable<Image> GetImages();
+        Task<IEnumerable<Image>> GetImagesAsync(string ownerId);
         bool IsImageOwner(Guid id, string ownerId);
-        Task<Image> GetImageAsync(Guid id);
+        Task<Image> GetImageAsync(Guid id, string ownerId);
         bool ImageExists(Guid id);
         void AddImage(Image image);
         void UpdateImage(Image image);

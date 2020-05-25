@@ -22,15 +22,19 @@ namespace ImageGallery.API.Services
             return _context.Images.Any(i => i.Id == id);
         }
 
-        public async Task<Image> GetImageAsync(Guid id)
+        public async Task<Image> GetImageAsync(Guid id, string ownerId)
         {
-            return await _context.Images.FirstOrDefaultAsync(i => i.Id == id);
+            return await _context.Images.FirstOrDefaultAsync(i => i.Id == id  && i.OwnerId == ownerId);
         }
 
-        public IEnumerable<Image> GetImages()
+        public async Task<IEnumerable<Image>> GetImagesAsync(string ownerId)
         {
-            return _context.Images
-                .OrderBy(i => i.Title).ToList();
+            if (string.IsNullOrWhiteSpace(ownerId))
+            {
+                return new List<Image>();
+            }
+            return await _context.Images.Where(image => image.OwnerId == ownerId)
+                .OrderBy(i => i.Title).ToListAsync();
         }
 
         public bool IsImageOwner(Guid id, string ownerId)

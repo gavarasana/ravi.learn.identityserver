@@ -1,9 +1,9 @@
-{
+﻿{
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "https://localhost:44389/",
+      "applicationUrl": "https://localhost:44389",
       "sslPort": 44389
     }
   },
@@ -15,15 +15,14 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
+    },
+    "SelfHost": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "applicationUrl": "https://localhost:44389;http://localhost:4000",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
     }
-    //"ImageGallery.Client": {
-    //  "commandName": "Project",
-    //  "launchBrowser": true,
-    //  "launchUrl": "http://localhost:6000;https://localhost:6001",
-    //  "environmentVariables": {
-    //    "ASPNETCORE_ENVIRONMENT": "Development"
-    //  },
-    //  "applicationUrl": "https://localhost:6001"
-    //}
   }
 }

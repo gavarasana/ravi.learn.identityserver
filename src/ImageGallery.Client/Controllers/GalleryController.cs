@@ -57,6 +57,7 @@ namespace ImageGallery.Client.Controllers
             throw new Exception("Error occurred while accessing API");
         }
 
+        //[Authorize(Roles = "PaidUser")]
         public async Task<IActionResult> EditImage(Guid id)
         {
 
@@ -87,6 +88,7 @@ namespace ImageGallery.Client.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+       // [Authorize(Roles = "PaidUser")]
         public async Task<IActionResult> EditImage(EditImageViewModel editImageViewModel)
         {
             if (!ModelState.IsValid)
@@ -122,6 +124,7 @@ namespace ImageGallery.Client.Controllers
             return RedirectToAction("Index");
         }
 
+        //[Authorize(Roles = "PaidUser")]
         public async Task<IActionResult> DeleteImage(Guid id)
         {
             var httpClient = _httpClientFactory.CreateClient("APIClient");
@@ -138,6 +141,7 @@ namespace ImageGallery.Client.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize(Roles = "PaidUser")]
         public IActionResult AddImage()
         {
             return View();
@@ -145,6 +149,7 @@ namespace ImageGallery.Client.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "PaidUser")]
         public async Task<IActionResult> AddImage(AddImageViewModel addImageViewModel)
         {
             if (!ModelState.IsValid)
