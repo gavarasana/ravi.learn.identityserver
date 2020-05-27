@@ -31,12 +31,16 @@ namespace ImageGallery.Client
             services.AddHttpContextAccessor();
             services.AddTransient<BearerTokenHandler>();
 
-            //services.Configure<FormOptions>(options =>
-            //{
-            //    options.ValueLengthLimit = 262144;
-            //    options.MultipartBodyLengthLimit = 262144;
-            //    options.MemoryBufferThreshold = 65536;
-            //});
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("OrderFrame", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("country", "Belgium");
+                    policy.RequireClaim("subscription", "PaidUser");
+                });
+            });
+
             services.AddControllersWithViews()
                  .AddJsonOptions(opts => opts.JsonSerializerOptions.PropertyNamingPolicy = null);
 
@@ -72,11 +76,15 @@ namespace ImageGallery.Client
                 options.Scope.Add("address");
                 options.Scope.Add("roles");
                 options.Scope.Add("imagegalleryapi");
+                options.Scope.Add("country");
+                options.Scope.Add("subscription");
                 options.SaveTokens = true;
                 options.GetClaimsFromUserInfoEndpoint = true;
                 options.ClaimActions.DeleteClaims("s_hash");
                 options.ClaimActions.MapUniqueJsonKey("address", "address");
                 options.ClaimActions.MapUniqueJsonKey("role", "role");
+                options.ClaimActions.MapUniqueJsonKey("country", "country");
+                options.ClaimActions.MapUniqueJsonKey("subscription", "subscription");
                 options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
                 {
                     RoleClaimType = JwtClaimTypes.Role,

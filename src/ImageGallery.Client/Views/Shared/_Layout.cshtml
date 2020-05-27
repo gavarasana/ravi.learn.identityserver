@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@inject Microsoft.AspNetCore.Authorization.IAuthorizationService AuthorizationService
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -26,6 +27,8 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Gallery" asp-action="AddImage">Add an image</a>
                             </li>
+                        }
+                        @if ((await AuthorizationService.AuthorizeAsync(User, null, "OrderFrame")).Succeeded) { 
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Gallery" asp-action="OrderFrame">Order a frame</a>
                             </li>
