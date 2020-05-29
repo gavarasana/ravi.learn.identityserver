@@ -33,6 +33,14 @@ namespace ImageGallery.Client.Controllers
         }
 
         [HttpGet]
+        [Route("RefreshToken")]
+        public async Task<ActionResult<string>> GetRefreshToken()
+        {
+            var refreshToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.RefreshToken);
+            return Ok(refreshToken);
+        }
+
+        [HttpGet]
         [Route("claims")]
         public ActionResult<Dictionary<string, string>> GetClaims()
         {

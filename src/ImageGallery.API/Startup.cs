@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using IdentityServer4.AccessTokenValidation;
+using ImageGallery.API.Authorization;
 using ImageGallery.API.Entities;
 using ImageGallery.API.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -26,6 +28,8 @@ namespace ImageGallery.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
+            services.AddScoped<IAuthorizationHandler, MustOwnImageHandler>();
 
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication(options =>
@@ -34,6 +38,15 @@ namespace ImageGallery.API
                     options.ApiName = "imagegalleryapi";
                 });
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("MustOwnImage", builder =>
+                {
+                    builder.RequireAuthenticatedUser();
+                    builder.AddRequirements(new MustOwnImageRequirement());
+                });
+            });
+                
             services.AddControllers()
                      .AddJsonOptions(opts => opts.JsonSerializerOptions.PropertyNamingPolicy = null);
 
