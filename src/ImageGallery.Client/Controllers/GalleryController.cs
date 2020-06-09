@@ -13,6 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ImageGallery.Client.Controllers
@@ -43,7 +44,7 @@ namespace ImageGallery.Client.Controllers
             if (response.IsSuccessStatusCode)
             {
 
-               using (var responseStream = await response.Content.ReadAsStreamAsync())
+                using (var responseStream = await response.Content.ReadAsStreamAsync())
                 {
                     return View(new GalleryIndexViewModel(
                         await JsonSerializer.DeserializeAsync<List<Image>>(responseStream)));
@@ -88,7 +89,7 @@ namespace ImageGallery.Client.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-       // [Authorize(Roles = "PaidUser")]
+        // [Authorize(Roles = "PaidUser")]
         public async Task<IActionResult> EditImage(EditImageViewModel editImageViewModel)
         {
             if (!ModelState.IsValid)
@@ -196,10 +197,48 @@ namespace ImageGallery.Client.Controllers
             return RedirectToAction("Index");
         }
 
-        public async Task Logout()
+        public async Task Logout(CancellationToken cancellationToken)
         {
+
+            var idpClient = _httpClientFactory.CreateClient("IDPClient");
+            var discoveryDocumentResponse = await idpClient.GetDiscoveryDocumentAsync();
+
+            if (discoveryDocumentResponse.IsError)
+            {
+                throw new Exception("Error occurred when retrieving meta data");
+            }
+
+            var accessTokenRevokeActionResponse = await idpClient.RevokeTokenAsync(new TokenRevocationRequest
+            {
+                Address = discoveryDocumentResponse.RevocationEndpoint,
+                ClientId = "imagegalleryclient",
+                ClientSecret = "D7B60E4F-1924-462E-9DA4-A6A18CD997ED",
+                Token = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken)
+
+            }, cancellationToken);
+
+            if (accessTokenRevokeActionResponse.IsError)
+            {
+                throw new Exception("Error occurred when revoking reference token");
+            }
+
+            var refreshTokenRevokeActionResponse = await idpClient.RevokeTokenAsync(new TokenRevocationRequest
+            {
+                Address = discoveryDocumentResponse.RevocationEndpoint,
+                ClientId = "imagegalleryclient",
+                ClientSecret = "D7B60E4F-1924-462E-9DA4-A6A18CD997ED",
+                Token = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.RefreshToken)
+
+            }, cancellationToken);
+
+            if (accessTokenRevokeActionResponse.IsError)
+            {
+                throw new Exception("Error occurred when revoking reference token");
+            }
+
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             await HttpContext.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme);
+
         }
 
         //[Authorize(Roles = "PaidUser")]

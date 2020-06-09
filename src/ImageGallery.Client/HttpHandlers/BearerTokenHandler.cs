@@ -91,7 +91,7 @@ namespace ImageGallery.Client.HttpHandlers
 
             currentAuthenticationResult.Properties.StoreTokens(newlyMintedTokens);
 
-            await Task.Delay(3000);
+            //await Task.Delay(3000);
 
             await _httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                     currentAuthenticationResult.Principal, currentAuthenticationResult.Properties);

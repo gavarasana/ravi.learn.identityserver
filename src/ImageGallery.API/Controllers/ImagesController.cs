@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using ImageGallery.API.Services;
 using ImageGallery.Model;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,17 +21,20 @@ namespace ImageGallery.API.Controllers
     {
         private readonly IGalleryRepository _galleryRepository;
         private readonly IWebHostEnvironment _hostingEnvironment;
+        private readonly ILogger<ImagesController> _logger;
         private readonly IMapper _mapper;
 
         public ImagesController(
             IGalleryRepository galleryRepository,
             IWebHostEnvironment hostingEnvironment,
+            ILogger<ImagesController> logger,
             IMapper mapper)
         {
             _galleryRepository = galleryRepository ?? 
                 throw new ArgumentNullException(nameof(galleryRepository));
             _hostingEnvironment = hostingEnvironment ?? 
                 throw new ArgumentNullException(nameof(hostingEnvironment));
+            _logger = logger;
             _mapper = mapper ?? 
                 throw new ArgumentNullException(nameof(mapper));
         }
@@ -114,7 +119,7 @@ namespace ImageGallery.API.Controllers
         //[Authorize(Roles = "PaidUser")]
         public async Task<IActionResult> DeleteImage(Guid id)
         {
-            var subjectId = User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+             var subjectId = User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
 
             var imageFromRepo = await _galleryRepository.GetImageAsync(id, subjectId);
 
@@ -135,6 +140,7 @@ namespace ImageGallery.API.Controllers
      //   [Authorize(Roles = "PaidUser")]
         public async Task<IActionResult> UpdateImageAsync(Guid id, [FromBody] ImageForUpdate imageForUpdate)
         {
+            _logger.LogDebug($"Access Token:{HttpContext.GetTokenAsync("access_token")}");
             var subjectId = User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
 
             var imageFromRepo = await _galleryRepository.GetImageAsync(id, subjectId);
